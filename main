@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH --job-name="extract_b0_masks"
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --mem=4G
+#SBATCH --time=00:05:00
+
+set -x
+set -e
+
+dwi=`jq -r '.dwi' config.json`
+bvals=`jq -r '.bvals' config.json`
+
+num_processes=4
+
+chmod a+x extract_b0s_mask.py
+
+time singularity exec -e docker://brainlife/mrtrix3:3.0_RC3 extract_b0_masks.py $dwi $bvals $num_processes
