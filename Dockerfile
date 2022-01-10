@@ -65,10 +65,9 @@ RUN apt-get update -qq \
     && curl -O https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz \
     && tar -xf Python-3.8.2.tar.xz \
     && cd Python-3.8.2 \
-    && ./configure --enable-optimizations --enable-shared --with-ensurepip=install --enable-loadable-sqlite-extensions \
+    && ./configure --enable-optimizations --enable-shared --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib" --with-ensurepip=install --enable-loadable-sqlite-extensions \
     && make -j 4 \
     && make altinstall \
-    && python3.8 -m pip install --upgrade pip \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && groupadd -r neuro && useradd --no-log-init --create-home --shell /bin/bash -r -g neuro neuro \
     && apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y \
@@ -100,6 +99,7 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
     echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/fsl/5.0" >> /home/neuro/.bashrc && \
     echo ". $FSLDIR/etc/fslconf/fsl.sh" >> /home/neuro/.bashrc && \
     echo "export FSLDIR PATH" >> /home/neuro/.bashrc \
+    && python3.8 -m pip install --upgrade pip \
     && pip3 install cython matplotlib h5py hdf5storage nibabel nipype scikit-learn pandas seaborn joblib \
     && mkdir -p ~/.nipype \
     && echo "[monitoring]" > ~/.nipype/nipype.cfg \
@@ -107,6 +107,9 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
     && pip3 install dipy \
     && rm -rf /home/neuro/.cache \
     && apt-get clean autoclean \
+    && cd ~ \
+    && wget https://github.com/dPys/app-extract_b0_masks/blob/main/extract_b0_masks.py -O /usr/local/bin/extract_b0_masks.py \
+    && chmod a+x /usr/local/bin/extract_b0_masks.py \
     && apt-get purge -y --auto-remove \
       git \
       jq \
@@ -122,9 +125,7 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
       gnupg \
       g++ \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && cd \
-    && wget https://github.com/dPys/app-extract_b0_masks/blob/main/extract_b0_masks.py
+    && rm -rf /tmp/* /var/tmp/*
 
 ENV FSLDIR=/usr/share/fsl/5.0 \
     FSLOUTPUTTYPE=NIFTI_GZ \
@@ -133,7 +134,9 @@ ENV FSLDIR=/usr/share/fsl/5.0 \
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/fsl/5.0 \
     FSLTCLSH=/usr/bin/tclsh \
     FSLWISH=/usr/bin/wish \
-    PATH=$FSLDIR/bin:$PATH
+    PATH=$FSLDIR/bin:$PATH \
+    PATH=/usr/local/bin:$PATH
+
 ENV GOTO_NUM_THREADS=4 \
     OMP_NUM_THREADS=4
 ENV QT_QPA_PLATFORM=offscreen

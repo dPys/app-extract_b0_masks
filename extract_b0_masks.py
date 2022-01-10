@@ -61,7 +61,7 @@ def make_b0_masks(dwi, b0_ix):
     os.system(cmd)
     return
 
-if __name__ == __main__:
+if __name__ == "__main__":
 
     dwi = sys.argv[0]
     bvals = np.genfromtxt(sys.argv[1])
