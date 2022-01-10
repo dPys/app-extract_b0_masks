@@ -105,7 +105,6 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
     && echo "[monitoring]" > ~/.nipype/nipype.cfg \
     && echo "enabled = true" >> ~/.nipype/nipype.cfg \
     && pip3 install dipy \
-    && cd / \
     && rm -rf /home/neuro/.cache \
     && apt-get clean autoclean \
     && apt-get purge -y --auto-remove \
@@ -123,9 +122,9 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
       gnupg \
       g++ \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-EXPOSE 22
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && cd \
+    && wget https://github.com/dPys/app-extract_b0_masks/blob/main/extract_b0_masks.py
 
 ENV FSLDIR=/usr/share/fsl/5.0 \
     FSLOUTPUTTYPE=NIFTI_GZ \
