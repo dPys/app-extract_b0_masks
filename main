@@ -16,4 +16,4 @@ num_processes=4
 
 chmod a+x extract_b0s_mask.py
 
-time singularity exec -e docker://brainlife/mrtrix3:3.0_RC3 extract_b0_masks.py $dwi $bvals $num_processes
+time singularity exec -e docker://dpys/extract_b0_mask:latest python3.8 -m extract_b0_masks.py $dwi $bvals $num_processes

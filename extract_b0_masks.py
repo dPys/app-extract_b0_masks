@@ -5,8 +5,6 @@ import joblib
 import numpy as np
 import nibabel as nb
 from nipype.utils.filemanip import fname_presuffix
-from nipype.utils.filemanip import fname_presuffix
-from nilearn.image import concat_imgs
 from dipy.segment.mask import median_otsu
 
 def extract_b0(in_file, b0_ix):
@@ -56,6 +54,10 @@ def make_b0_masks(dwi, b0_ix):
 
     # bet
     cmd = f"bet {b0s_file} {fname_presuffix(b0s_file, suffix='_bet', use_ext=True)} -m -f 0.2"
+    os.system(cmd)
+
+    # Consensus
+    cmd = f"fslmaths {fname_presuffix(b0s_file, suffix="_brain_mask", use_ext=True)} -mul {fname_presuffix(b0s_file, suffix='_bet_mask', use_ext=True)} {fname_presuffix(b0s_file, suffix='_consensus_mask', use_ext=True)}"
     os.system(cmd)
     return
 
