@@ -110,7 +110,7 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
     && git clone https://github.com/dPys/app-extract_b0_masks.git /home/neuro/app-extract_b0_masks \
     && cd /home/neuro/app-extract_b0_masks \
     && cp ./extract_b0_masks.py /usr/local/bin/extract_b0_masks.py \
-    && chmod a+x /usr/local/bin/extract_b0_masks.py \\
+    && chmod a+x /usr/local/bin/extract_b0_masks.py \
     && apt-get clean autoclean \
     && apt-get purge -y --auto-remove \
       git \
