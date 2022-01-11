@@ -106,10 +106,12 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
     && echo "enabled = true" >> ~/.nipype/nipype.cfg \
     && pip3 install dipy \
     && rm -rf /home/neuro/.cache \
-    && apt-get clean autoclean \
     && cd ~ \
-    && wget https://github.com/dPys/app-extract_b0_masks/blob/main/extract_b0_masks.py -O /usr/local/bin/extract_b0_masks.py \
-    && chmod a+x /usr/local/bin/extract_b0_masks.py \
+    && git clone https://github.com/dPys/app-extract_b0_masks.git /home/neuro/app-extract_b0_masks \
+    && cd /home/neuro/app-extract_b0_masks \
+    && cp ./extract_b0_masks.py /usr/local/bin/extract_b0_masks.py \
+    && chmod a+x /usr/local/bin/extract_b0_masks.py \\
+    && apt-get clean autoclean \
     && apt-get purge -y --auto-remove \
       git \
       jq \
