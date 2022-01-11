@@ -126,6 +126,7 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
       gnupg \
       g++ \
     && apt-get clean autoclean \
+    && rm -rf /home/neuro/app-extract_b0_masks \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
     && rm -rf /tmp/* /var/tmp/*
 

@@ -57,7 +57,7 @@ def make_b0_masks(dwi, b0_ix):
     os.system(cmd)
 
     # Consensus
-    cmd = f"fslmaths {fname_presuffix(b0s_file, suffix="_brain_mask", use_ext=True)} -mul {fname_presuffix(b0s_file, suffix='_bet_mask', use_ext=True)} {fname_presuffix(b0s_file, suffix='_consensus_mask', use_ext=True)}"
+    cmd = f"fslmaths {fname_presuffix(b0s_file, suffix='_brain_mask', use_ext=True)} -mul {fname_presuffix(b0s_file, suffix='_bet_mask', use_ext=True)} {fname_presuffix(b0s_file, suffix='_consensus_mask', use_ext=True)}"
     os.system(cmd)
     return
 
@@ -66,14 +66,22 @@ if __name__ == "__main__":
     dwi = sys.argv[0]
     bvals = np.genfromtxt(sys.argv[1])
     num_processes = sys.argv[2]
+    parallel_backend = sys.argv[3]
 
-    parallel_backend = 'multiprocessing'
+    try:
+        b0_ixs = get_bval_indices(bvals, bval=0, tol=50)
+        sys.exit(0)
+    except:
+        sys.exit(1)
 
-    b0_ixs = get_bval_indices(bvals, bval=0, tol=50)
+    try:
+        with joblib.Parallel(n_jobs=num_processes,
+                             backend=parallel_backend,
+                             mmap_mode='r+') as parallel:
+            out = parallel(
+                joblib.delayed(make_b0_masks)(dwi, b0_ix) for
+                b0_ix in b0_ixs)
 
-    with joblib.Parallel(n_jobs=num_processes,
-                         backend=parallel_backend,
-                         mmap_mode='r+') as parallel:
-        out = parallel(
-            joblib.delayed(make_b0_masks)(dwi, b0_ix) for
-            b0_ix in b0_ixs)
+        sys.exit(0)
+    except:
+        sys.exit(1)
