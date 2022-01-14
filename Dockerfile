@@ -79,9 +79,9 @@ RUN apt-get update -qq \
     apt-get clean && cd /tmp \
     && wget https://fsl.fmrib.ox.ac.uk/fsldownloads/patches/fsl-5.0.10-python3.tar.gz \
     && tar -zxvf fsl-5.0.10-python3.tar.gz \
-    && cp fsl/bin/* $FSLDIR/bin/ \
+    && cp fsl/bin/* /usr/share/fsl/5.0/bin \
     && rm -r fsl* \
-    && chmod 777 -R $FSLDIR/bin \
+    && chmod 777 -R /usr/share/fsl/5.0/bin \
     && chmod 777 -R /usr/lib/fsl/5.0
 
 ENV FSLDIR=/usr/share/fsl/5.0 \
@@ -111,6 +111,7 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
     && cd /home/neuro/app-extract_b0_masks \
     && cp ./extract_b0_masks.py /usr/local/bin/extract_b0_masks.py \
     && chmod a+x /usr/local/bin/extract_b0_masks.py \
+    && apt-get clean autoclean \
     && apt-get purge -y --auto-remove \
       git \
       jq \
@@ -125,10 +126,11 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
       libc6-dev \
       gnupg \
       g++ \
-    && apt-get clean autoclean \
     && rm -rf /home/neuro/app-extract_b0_masks \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
     && rm -rf /tmp/* /var/tmp/*
+
+USER neuro
 
 ENV FSLDIR=/usr/share/fsl/5.0 \
     FSLOUTPUTTYPE=NIFTI_GZ \
