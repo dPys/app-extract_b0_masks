@@ -64,7 +64,9 @@ def make_b0_masks(dwi, b0_ix):
 if __name__ == "__main__":
 
     dwi = sys.argv[0]
-    bvals = np.genfromtxt(sys.argv[1])
+    with open(sys.argv[1], 'rb') as f:
+    	bvals = np.genfromtxt(f, dtype=float)
+    f.close()
     num_processes = sys.argv[2]
     parallel_backend = sys.argv[3]
 

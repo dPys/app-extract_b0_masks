@@ -24,6 +24,7 @@ RUN apt-get update -qq \
         libffi-dev \
         curl \
         libbz2-dev \
+	liblzma-dev \
         cmake \
         wget \
         vim \
@@ -100,7 +101,8 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
     echo ". $FSLDIR/etc/fslconf/fsl.sh" >> /home/neuro/.bashrc && \
     echo "export FSLDIR PATH" >> /home/neuro/.bashrc \
     && python3.8 -m pip install --upgrade pip \
-    && pip3 install cython matplotlib h5py hdf5storage nibabel nipype scikit-learn pandas seaborn joblib \
+    && pip3 install cython matplotlib h5py hdf5storage nibabel nipype scikit-learn pandas seaborn joblib ipython \
+    && pip install --upgrade --force-reinstall numpy \
     && mkdir -p ~/.nipype \
     && echo "[monitoring]" > ~/.nipype/nipype.cfg \
     && echo "enabled = true" >> ~/.nipype/nipype.cfg \
@@ -117,7 +119,7 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
       jq \
       wget \
       cmake \
-      vim \
+#      vim \
       gcc \
       curl \
       openssl \
