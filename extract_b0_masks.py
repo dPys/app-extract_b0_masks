@@ -63,6 +63,7 @@ def make_b0_masks(dwi, b0_ix):
 
 if __name__ == "__main__":
 
+    sys.argv = map(lambda arg: arg.decode(sys.stdout.encoding), sys.argv)
     dwi = sys.argv[0]
     fbvals = sys.argv[1]
     bvals = np.genfromtxt(fbvals, dtype=float)
