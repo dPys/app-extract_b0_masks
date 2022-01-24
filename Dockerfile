@@ -125,7 +125,7 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
 #      openssl \
       build-essential \
       ca-certificates \
-#      libc6-dev \
+      libc6-dev \
       gnupg \
       g++ \
     && rm -rf /home/neuro/app-extract_b0_masks \
