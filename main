@@ -15,4 +15,7 @@ bvals=`jq -r '.bvals' config.json`
 num_processes=4
 backend='multiprocessing'
 
-time singularity exec -e docker://dpys/extract_b0_mask:latest extract_b0_masks.py $dwi $bvals $num_processes $backend
+echo $dwi
+echo $bvals
+
+time singularity exec -e docker://dpys/extract_b0_mask:latest extract_b0_masks.py "$dwi" "$bvals" "$num_processes" "$backend"

@@ -122,10 +122,10 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
 #      vim \
       gcc \
       curl \
-      openssl \
+#      openssl \
       build-essential \
       ca-certificates \
-      libc6-dev \
+#      libc6-dev \
       gnupg \
       g++ \
     && rm -rf /home/neuro/app-extract_b0_masks \
@@ -142,10 +142,9 @@ ENV FSLDIR=/usr/share/fsl/5.0 \
     FSLTCLSH=/usr/bin/tclsh \
     FSLWISH=/usr/bin/wish \
     PATH=$FSLDIR/bin:$PATH \
-    PATH=/usr/local/bin:$PATH
-
-ENV GOTO_NUM_THREADS=4 \
-    OMP_NUM_THREADS=4
-ENV QT_QPA_PLATFORM=offscreen
+    PATH=/usr/local/bin:$PATH \
+    GOTO_NUM_THREADS=4 \
+    OMP_NUM_THREADS=4 \
+    QT_QPA_PLATFORM=offscreen
 
 RUN . /home/neuro/.bashrc
