@@ -9,6 +9,8 @@
 set -x
 set -e
 
+function abspath { echo $(cd $(dirname $1); pwd)/$(basename $1); }
+
 dwi=`jq -r '.dwi' config.json`
 bvals=`jq -r '.bvals' config.json`
 
