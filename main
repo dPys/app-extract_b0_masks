@@ -20,4 +20,4 @@ backend='multiprocessing'
 echo `abspath $dwi`
 echo `abspath $bvals`
 
-singularity exec --cleanenv -e docker://dpys/extract_b0_mask:latest extract_b0_masks `abspath "$dwi"` `abspath "$bvals"` "$num_processes" "$backend"
+singularity exec --cleanenv -e docker://dpys/extract_b0_mask:latest extract_b0_masks.py `abspath "$dwi"` `abspath "$bvals"` "$num_processes" "$backend"
