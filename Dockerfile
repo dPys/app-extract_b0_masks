@@ -119,10 +119,10 @@ RUN echo "FSLDIR=/usr/share/fsl/5.0" >> /home/neuro/.bashrc && \
       jq \
       wget \
       cmake \
-#      vim \
+      vim \
       gcc \
       curl \
-#      openssl \
+      openssl \
       build-essential \
       ca-certificates \
       libc6-dev \
