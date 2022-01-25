@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.8
 import os
 import sys
+import argparse
 import joblib
 import numpy as np
 import nibabel as nb
@@ -57,32 +58,84 @@ def make_b0_masks(dwi, b0_ix):
     os.system(cmd)
 
     # Consensus
-    cmd = f"fslmaths {fname_presuffix(b0s_file, suffix='_brain_mask', use_ext=True)} -mul {fname_presuffix(b0s_file, suffix='_bet_mask', use_ext=True)} {fname_presuffix(b0s_file, suffix='_consensus_mask', use_ext=True)}"
+    otsu_mask = fname_presuffix(b0s_file, suffix='_brain_mask', use_ext=True)
+    bet_mask = fname_presuffix(b0s_file, suffix='_bet_mask', use_ext=True)
+    out_mask = fname_presuffix(b0s_file, suffix='_consensus_mask', use_ext=True)
+    cmd = f"fslmaths {otsu_mask} -mul {bet_mask} {out_mask}"
     os.system(cmd)
-    return
+    return otsu_mask, bet_mask, out_mask
+
+def get_parser():
+    """Parse command-line inputs"""
+
+    parser = argparse.ArgumentParser(
+        description="Extract B0's and make a mask for each")
+    parser.add_argument(
+        "-dwi",
+        metavar="Path to diffusion-weighted imaging data file",
+        default=None,
+        help="Specify a path to a preprocessed dmri diffusion "
+             "Nifti1Image in native diffusion space and in .nii or "
+             ".nii.gz format.\n",
+    )
+    parser.add_argument(
+        "-bval",
+        metavar="Path to b-values file",
+        default=None,
+        help="Specify a path to a b-values text file containing "
+             "gradient shell values per diffusion direction.\n",
+    )
+    parser.add_argument(
+        "-cores",
+        default="4",
+        nargs=1,
+        choices=["2", "4", "6"],
+        help="Optionally use this flag if you wish to change the number of"
+             "cores for multiprocessing. Default is 4.\n",
+    )
+    parser.add_argument(
+        "-backend",
+        default="multiprocessing",
+        nargs=1,
+        choices=["loky", "multiprocessing", "threading"],
+        help="Optionally use this flag if you wish to change the backend."
+             "Default is multiprocessing.\n",
+    )
+    return parser
 
 if __name__ == "__main__":
 
-    dwi = sys.argv[0]
-    fbvals = sys.argv[1]
+    args = get_parser().parse_args()
+    dwi_file = args.dwi
+    fbvals = args.bval
+    num_processes = args.cores[0]
+    parallel_backend = args.backend[0]
+    print(num_processes)
+    print(parallel_backend)
+    print(dwi_file)
+    print(fbvals)
+
     bvals = np.genfromtxt(fbvals, dtype=float)
-    num_processes = sys.argv[2]
-    parallel_backend = sys.argv[3]
+    print(bvals)
 
     try:
         b0_ixs = get_bval_indices(bvals, bval=0, tol=50)
-        sys.exit(0)
+        print(b0_ixs)
     except:
+        print("Run failed")
         sys.exit(1)
 
     try:
-        with joblib.Parallel(n_jobs=num_processes,
-                             backend=parallel_backend,
+        with joblib.Parallel(n_jobs=int(num_processes),
+                             backend=str(parallel_backend),
                              mmap_mode='r+') as parallel:
             out = parallel(
-                joblib.delayed(make_b0_masks)(dwi, b0_ix) for
+                joblib.delayed(make_b0_masks)(dwi_file, b0_ix) for
                 b0_ix in b0_ixs)
-
-        sys.exit(0)
+        print(out)
     except:
+        print("Run failed")
         sys.exit(1)
+
+    sys.exit(0)
+

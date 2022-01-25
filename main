@@ -15,7 +15,7 @@ dwi=`jq -r '.dwi' config.json`
 bvals=`jq -r '.bvals' config.json`
 
 num_processes=4
-backend='multiprocessing'
+backend='loky'
 
 echo `abspath $dwi`
 echo `abspath $bvals`
